@@ -1,15 +1,18 @@
-"use client";  // This directive tells Next.js to treat this file as a client component
+// /app/dashboard/page.js
 
-import Sidebar from './components/Sidebar'; // Import Sidebar or other shared components
-import '../../styles/global.scss'; // Import global styles
-import { useState, useEffect } from 'react';
-import axios from 'axios'; // Import axios
+"use client"; // This tells Next.js to treat this component as a client-side component
 
-export default function RootLayout({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter to handle routing
+import axios from 'axios';
+
+export default function DashboardPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter(); // Now this works because the component is client-side
 
   useEffect(() => {
-   const checkAuth = async () => {
+    const checkAuth = async () => {
       try {
         console.log("Making request to /api/auth/status with credentials enabled...");
   
@@ -37,22 +40,17 @@ export default function RootLayout({ children }) {
   
     checkAuth(); // Run on mount
   }, []);
+  
+
+
+  if (!isAuthenticated) {
+    return <div>You are not authenticated. Please log in.</div>; // Show error message if not authenticated
+  }
 
   return (
-    <html lang="en">
-      <body>
-        {isAuthenticated === null ? (
-          <div>Loading...</div> // Fallback UI during authentication check
-        ) : isAuthenticated ? (
-          <>
-            <Sidebar />
-            <div className='container'>{children}</div>
-          </>
-        ) : (
-          <div>{children}</div>
-        )}
-      </body>
-    </html>
+    <div>
+      <h1>Welcome to your Dashboard</h1>
+      {/* Your dashboard content goes here */}
+    </div>
   );
-  
 }

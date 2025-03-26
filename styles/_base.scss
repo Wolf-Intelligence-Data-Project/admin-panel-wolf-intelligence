@@ -1,0 +1,51 @@
+// 🌍 Global Styles
+body {
+  background-color: $black;
+  color: $white;
+  font-family: $font-primary;
+}
+
+a {
+  color: $white;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: $gray-light;
+  }
+}
+
+input {
+  padding: 0 20px 0 10px;
+  min-height: 2.5rem;
+  border-radius: 50px;
+  min-width: 200px;
+  border: none;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+ul, ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+// ✅ List Items
+li {
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+form {
+  @include flex-column-center;
+  gap: 20px;
+}

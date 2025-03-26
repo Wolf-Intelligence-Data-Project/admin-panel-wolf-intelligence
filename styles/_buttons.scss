@@ -1,0 +1,47 @@
+@import 'variables', 'mixins';
+
+// 🖤 Default Button
+.button {
+  padding: $spacing-small $spacing-medium;
+  border-radius: $border-radius;
+  font-size: $font-size-base;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  min-height: 3rem;
+}
+
+// ✅ Positive (Green)
+.button-positive {
+  @extend .button;
+  background-color: $green;
+  color: $white;
+
+  &:hover {
+    background-color: $green-dark;
+  }
+}
+
+// ❌ Negative (Red)
+.button-negative {
+  @extend .button;
+  background-color: $red;
+  color: $white;
+
+  &:hover {
+    background-color: $red-dark;
+  }
+}
+
+// ⚪ Neutral (Gray)
+.button-neutral {
+  @extend .button;
+  background-color: $gray-dark;
+  color: $white;
+
+  &:hover {
+    background-color: $gray;
+  }
+}

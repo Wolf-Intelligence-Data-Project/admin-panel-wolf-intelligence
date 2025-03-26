@@ -1,0 +1,15 @@
+@import 'variables', 'mixins';
+
+// 🖼️ Card Component
+.card {
+  background-color: $gray-dark;
+  color: $white;
+  border-radius: $border-radius;
+  padding: $spacing-medium;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+}

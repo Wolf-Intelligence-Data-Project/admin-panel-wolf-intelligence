@@ -1,0 +1,15 @@
+@import '../mixins.scss';
+
+
+.loginContainer {
+    @include flex-center;
+    padding: 20px;
+    max-width: 400px;
+    margin: auto;
+  }
+  
+  .error {
+    color: red;
+    margin-top: 10px;
+  }
+  

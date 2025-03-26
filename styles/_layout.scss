@@ -1,0 +1,30 @@
+@import 'mixins';
+
+// 📦 Page Container
+.container {
+  @include flex-center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-medium;
+}
+
+// 🔳 Flexbox Utilities
+.flex {
+  display: flex;
+
+  &-center {
+    @include flex-center;
+  }
+
+  &-column {
+    flex-direction: column;
+  }
+
+  &-space-between {
+    justify-content: space-between;
+  }
+}
+
+.input-group {
+  @include flex-column-left
+}
