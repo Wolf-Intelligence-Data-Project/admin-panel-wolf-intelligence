@@ -1,12 +1,24 @@
+
+
 .sidebar {
+  @include flex(column, start, center);
     width: 200px !important;
-    background-color: #f4f4f4;
     padding: 20px;
+    top: 0;
+    border-radius: 0 0 1rem 0;
+    z-index: 300;
+    position: absolute;
+    left: 0;
+    min-height: 100vh;
+    @include theme(light)
   }
   
   .sidebar ul {
     list-style: none;
     padding: 0;
+    :last-child {
+      margin-top: 5rem;
+    }
   }
   
   .sidebar li {

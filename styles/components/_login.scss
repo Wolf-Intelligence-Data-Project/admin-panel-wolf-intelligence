@@ -1,11 +1,10 @@
 @import '../mixins.scss';
 
 
-.loginContainer {
+.login-container {
     @include flex-center;
     padding: 20px;
     max-width: 400px;
-    margin: auto;
   }
   
   .error {

@@ -1,11 +1,10 @@
-"use client";
-
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import "../../../styles/components/_sidebar.scss";
 
 export default function Sidebar() {
+  console.log("Sidebar component rendered");  // Test render
+
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -27,7 +26,7 @@ export default function Sidebar() {
 
   return (
     <div className="sidebar">
-      <p>Wolf Intelligence</p>
+      <h3>Wolf Intelligence</h3>
       <ul>
         <li>
           <Link href="/dashboard/moderators">Moderators Manager</Link>
@@ -41,10 +40,11 @@ export default function Sidebar() {
         <li>
           <Link href="/dashboard/products">Products Manager</Link>
         </li>
-      </ul>
-      <button className="button-negative" onClick={handleLogout}>
+        <li onClick={handleLogout}>
         Sign Out
-      </button>
+      </li>
+      </ul>
+    
     </div>
   );
 }

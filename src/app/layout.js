@@ -1,58 +1,34 @@
-"use client";  // This directive tells Next.js to treat this file as a client component
+"use client";
 
-import Sidebar from './components/Sidebar'; // Import Sidebar or other shared components
-import '../../styles/global.scss'; // Import global styles
-import { useState, useEffect } from 'react';
-import axios from 'axios'; // Import axios
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import LoadingSpinner from "./components/LoadingSpinner";
+import "../../styles/global.scss";
+import useAuthCheck from "./hooks/useAuthCheck";
+import LoginPage from "./login/page";
 
 export default function RootLayout({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated} = useAuthCheck();
+  const router = useRouter();
 
   useEffect(() => {
-   const checkAuth = async () => {
-      try {
-        console.log("Making request to /api/auth/status with credentials enabled...");
-  
-        const res = await axios.get("http://localhost:5000/api/auth/status", {
-          withCredentials: true, // Ensure credentials (cookies) are sent
-          headers: {
-            "Content-Type": "application/json", // Ensure correct content type
-          },
-        });
-  
-        console.log("Authentication check response:", res.data);
-        setIsAuthenticated(res.data.isAuthenticated);
-      } catch (error) {
-        console.error("Error checking authentication:", error);
-  
-        // Log the response error details
-        if (error.response) {
-          console.error("Error response data:", error.response.data);
-          console.error("Error response status:", error.response.status);
-        }
-        
-        setIsAuthenticated(false); // If there's an error, mark as unauthenticated
-      }
-    };
-  
-    checkAuth(); // Run on mount
-  }, []);
+    if (isAuthenticated) {
+      router.push("/dashboard"); // Redirect authenticated users to dashboard
+    }
+  }, [isAuthenticated, router]);
 
   return (
     <html lang="en">
       <body>
         {isAuthenticated === null ? (
-          <div>Loading...</div> // Fallback UI during authentication check
+          <LoadingSpinner /> // Show while checking authentication
         ) : isAuthenticated ? (
-          <>
-            <Sidebar />
-            <div className='container'>{children}</div>
-          </>
+          
+          <div className="container">{children}</div> // Show content if authenticated
         ) : (
-          <div>{children}</div>
+          <LoginPage /> // Show login if not authenticated
         )}
       </body>
     </html>
   );
-  
 }

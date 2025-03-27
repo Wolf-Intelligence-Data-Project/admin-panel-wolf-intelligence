@@ -3,6 +3,7 @@ body {
   background-color: $black;
   color: $white;
   font-family: $font-primary;
+  position: relative;
 }
 
 a {
@@ -11,6 +12,7 @@ a {
   transition: color 0.2s ease-in-out;
 
   &:hover {
+    cursor: pointer;
     color: $gray-light;
   }
 }
