@@ -1,33 +1,26 @@
 
-
 .sidebar {
   @include flex(column, start, center);
-    width: 200px !important;
-    padding: 20px;
-    top: 0;
-    border-radius: 0 0 1rem 0;
-    z-index: 300;
-    position: absolute;
-    left: 0;
+    width: 250px !important;
     min-height: 100vh;
-    @include theme(light)
+    @include theme(dark);
   }
   
   .sidebar ul {
-    list-style: none;
-    padding: 0;
+    @include flex(column, start, center);
+    padding: 30px 50px;
     :last-child {
-      margin-top: 5rem;
+      margin-top: 13rem;
     }
   }
   
   .sidebar li {
+    padding-left: 70px;
     margin: 10px 0;
   }
   
   .sidebar li a {
-    color: #333;
+    color: $white;
     text-decoration: none;
-    font-weight: bold;
   }
   

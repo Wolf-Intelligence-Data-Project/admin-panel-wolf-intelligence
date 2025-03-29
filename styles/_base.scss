@@ -1,20 +1,11 @@
 // 🌍 Global Styles
 body {
-  background-color: $black;
-  color: $white;
+  background-color: $white;
+  color: $black;
   font-family: $font-primary;
   position: relative;
-}
-
-a {
-  color: $white;
-  text-decoration: none;
-  transition: color 0.2s ease-in-out;
-
-  &:hover {
-    cursor: pointer;
-    color: $gray-light;
-  }
+  margin: 0;
+  padding: 0;
 }
 
 input {
@@ -31,16 +22,17 @@ input {
 
 ul, ol {
   list-style: none;
-  padding: 0;
+  width: 100% !important;
+  padding: 0 20px;
   margin: 0;
 }
 
 // ✅ List Items
 li {
+  margin: 0;
   padding: 10px 15px;
-  border-radius: 5px;
+  width:100%;
   transition: background-color 0.2s ease-in-out;
-
   &:hover {
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.1);

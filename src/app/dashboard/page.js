@@ -5,7 +5,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation"; // Import useRouter to handle routing
 import axios from 'axios';
-import Sidebar from "../components/Sidebar";
 
 export default function DashboardPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -20,7 +19,6 @@ export default function DashboardPage() {
 
   return (
     <>
-    <Sidebar />
       <h1>Welcome to your Dashboard</h1>
       {/* Your dashboard content goes here */}
     </>

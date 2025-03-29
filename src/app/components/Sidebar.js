@@ -1,20 +1,23 @@
+"use client";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useAuth } from "../../context/authContext"; // ✅ Use AuthContext here
 
 export default function Sidebar() {
-  console.log("Sidebar component rendered");  // Test render
-
+  const { isAuthenticated, setIsAuthenticated } = useAuth(); // ✅ Access auth state
   const router = useRouter();
 
   const handleLogout = async () => {
     try {
       const res = await axios.delete("/api/auth/logout", {
-        withCredentials: true, // Ensure cookies are sent
+        withCredentials: true, 
       });
 
       if (res.status === 200) {
-        router.push("/login"); // Redirect to login page after logout
+        setIsAuthenticated(false); // ✅ Update auth state
+        router.push("/"); // ✅ Redirect to login page
       } else {
         alert(res.data?.message || "Logout failed.");
       }
@@ -23,6 +26,9 @@ export default function Sidebar() {
       alert(error.response?.data?.message || "An error occurred during logout.");
     }
   };
+
+  if (!isAuthenticated) return null; // ✅ Hide Sidebar if not logged in
+
 
   return (
     <div className="sidebar">
