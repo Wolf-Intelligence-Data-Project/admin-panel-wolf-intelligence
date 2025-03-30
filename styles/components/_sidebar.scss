@@ -1,26 +1,91 @@
 
 .sidebar {
   @include flex(column, start, center);
-    width: 250px !important;
-    min-height: 100vh;
-    @include theme(dark);
+  width: 250px !important;
+  height: 100% !important;
+  @include theme(dark);
+  overflow: hidden !important;
+  z-index: 100;
+  h3{
+    margin-left: -7px;
+   a{
+    color: $white;
+    &:hover{
+      color: $gray;
+      cursor: pointer;
+      color: $gray-light;
+    }
+   }
   }
-  
-  .sidebar ul {
-    @include flex(column, start, center);
-    padding: 30px 50px;
-    :last-child {
-      margin-top: 13rem;
+}
+
+.sidebar ul {
+  @include flex(column, start, center);
+  padding: 30px 50px;
+  list-style: none;
+  margin: 0; // Add this to prevent the default margin of ul
+
+}
+
+.sidebar a {
+  width: 100%;
+  display: block; // Make the link fill the container
+  box-sizing: border-box; // Prevent overflow
+  color: $white;
+  text-decoration: none;
+
+  span {
+    padding: 20px;
+    margin: 10px 0;
+    width: 100%;
+    display: block; // Make the span fill the container
+    box-sizing: border-box; // Prevent overflow
+    transition: background-color 0.3s ease-in-out;
+
+    &.active {
+      background: rgba(255, 255, 255, 0.1); 
+      font-weight: bold;
+      border-left: 5px solid $white;
+    }
+   
+    &:hover {
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.2);
     }
   }
   
-  .sidebar li {
-    padding-left: 70px;
-    margin: 10px 0;
+}
+
+.sidebar a.active {
+  background: rgba(255, 255, 255, 0.1); 
+  font-weight: bold;
+  border-left: 5px solid $white; 
+}
+
+footer {
+  margin-top: auto;
+  text-align: center;
+  margin-bottom: 3rem;
+  width: 100%; 
+  p {
+    margin: 0;
   }
-  
-  .sidebar li a {
+  a {
+    padding: 20px;
+    margin: 10px 0;
+    width: 100%; 
+    display: block; // Make the link fill the container
     color: $white;
     text-decoration: none;
-  }
   
+
+    &:hover {
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+ 
+
+ 
+}
+

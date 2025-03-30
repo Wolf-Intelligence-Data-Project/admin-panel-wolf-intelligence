@@ -1,17 +1,40 @@
 @import 'mixins';
 
-
 .wrapper {
-  @include flex-space-between;
-  min-width: 100%;
-  height: 100%;
+  display: grid;
+  grid-template-rows: 1fr; /* First row for sidebar, second row for header and container */
+  grid-template-columns: auto 1fr; /* Full-width column for sidebar */
+  height: 100vh; /* Full viewport height */
+  overflow: visible;
+  margin-bottom: -15px;
+  margin-right: -15px;
+  width: 100%;
+
+}
+
+.sidebar {
+  grid-column: 1 / 2;
+}
+
+.header {
+  @include flex-center;
+  padding-left: 2rem;
+  grid-row: 1 / 2;
+  height: 7rem;
+  @include theme(light);
+  background: $gray-light;
+  padding-right: 60px;
+  margin-bottom: 50px;
 }
 
 // 📦 Page Container
 .container {
   @include flex-center;
   margin: 0 auto;
-  padding: 0 $spacing-medium;
+  padding: 0 30px 0 30px;
+  width: 100%;
+  box-sizing: border-box;
+  grid-row: 2 / 3;
 }
 
 // 🔳 Flexbox Utilities
@@ -33,4 +56,92 @@
 
 .input-group {
   @include flex-column-left
+}
+
+.hidden-file-input {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+
+.box {
+  flex: 1;
+  position: relative;
+  @include flex-column-center;
+  background-color: none !important;
+  padding: 40px;
+  box-shadow: 1px 2px 3px rgba(0,0,0,0.2);
+  border-radius: 2rem;
+  margin: 1rem;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  max-width: fit-content;
+  
+  .row {
+    
+    @include flex-space-between;
+    gap: 1rem;
+    white-space: nowrap;
+    border-bottom: 2px groove $gray-light;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif !important;
+    padding: 0 10px;
+    width: 100%;
+    h2 {
+      margin:0;
+      padding: 0;
+    }
+    h3 {
+      margin:0;
+      padding: 0;
+    }
+    h4{
+      @include flex-center;
+      padding: 0;
+      margin: 0;
+      height: 100% !important;
+    }
+
+  }
+  .upload-form {
+    
+  }
+  label{
+    @extend .button;
+    @include flex-center;
+    min-width: 5rem;
+    background-color: $white;
+    border: 2px solid $gray !important; 
+    color: $gray-dark;
+    &:hover {
+      background-color: $gray-light;
+    }
+  }
+  h2 {
+    margin-top:0;
+  }
+  h3 {
+    margin:0;
+    padding: 0;
+  }
+  .error{
+    top: 80%;
+  }
+}
+
+
+.error {
+  @include flex-center;
+  position: absolute !important;
+  background-color: rgba(165, 0, 0, 0.3);
+  color: red;
+  margin-top: 10px;
+  padding: 5px 20px;
+  border-radius: 0.5rem;
+  top: 0.2rem;
+}  
+
+.copyright {
+  @include flex-column-center;
+  font-size: 11px;
+  padding: 0 20px;
 }

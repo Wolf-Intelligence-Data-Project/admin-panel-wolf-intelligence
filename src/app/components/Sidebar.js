@@ -1,23 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation"; // ✅ Get the current path
 import axios from "axios";
-import { useAuth } from "../../context/authContext"; // ✅ Use AuthContext here
+import { useAuth } from "../../context/authContext"; 
 
 export default function Sidebar() {
-  const { isAuthenticated, setIsAuthenticated } = useAuth(); // ✅ Access auth state
-  const router = useRouter();
+  const { isAuthenticated, setIsAuthenticated } = useAuth(); 
+  const pathname = usePathname(); // ✅ Get the current URL path
 
   const handleLogout = async () => {
     try {
       const res = await axios.delete("/api/auth/logout", {
-        withCredentials: true, 
+        withCredentials: true,
       });
 
       if (res.status === 200) {
-        setIsAuthenticated(false); // ✅ Update auth state
-        router.push("/"); // ✅ Redirect to login page
+        setIsAuthenticated(false);
+        router.push("/");
       } else {
         alert(res.data?.message || "Logout failed.");
       }
@@ -27,30 +27,35 @@ export default function Sidebar() {
     }
   };
 
-  if (!isAuthenticated) return null; // ✅ Hide Sidebar if not logged in
-
+  if (!isAuthenticated) return null; 
 
   return (
     <div className="sidebar">
-      <h3>Wolf Intelligence</h3>
+     <h3><Link href='/dashboard'>Wolf Intelligence</Link></h3>
       <ul>
-        <li>
-          <Link href="/dashboard/moderators">Moderators Manager</Link>
-        </li>
-        <li>
-          <Link href="/dashboard/users">Users Manager</Link>
-        </li>
-        <li>
-          <Link href="/dashboard/orders">Orders Manager</Link>
-        </li>
-        <li>
-          <Link href="/dashboard/products">Products Manager</Link>
-        </li>
-        <li onClick={handleLogout}>
-        Sign Out
-      </li>
+      <Link href="/dashboard">
+  <span className={pathname === "/dashboard" ? "active" : ""}>Översikt</span>
+</Link>
+<Link href="/moderators">
+  <span className={pathname === "/moderators" ? "active" : ""}>Moderatorhantering</span>
+</Link>
+<Link href="/users">
+  <span className={pathname === "/users" ? "active" : ""}>Användarhantering</span>
+</Link>
+<Link href="/orders">
+  <span className={pathname === "/orders" ? "active" : ""}>Orderhantering</span>
+</Link>
+<Link href="/data">
+  <span className={pathname === "/data" ? "active" : ""}>Datahantering</span>
+</Link>
       </ul>
-    
+      <footer>
+        <a onClick={handleLogout}>Logga ut</a>
+        <div className="copyright">
+          <p>&copy; {new Date().getFullYear()} <b>Wolf Intelligence AB</b>.</p>
+          <p>All Rights Reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

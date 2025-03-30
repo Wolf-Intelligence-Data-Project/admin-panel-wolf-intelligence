@@ -1,12 +1,12 @@
 // Import all other SCSS files
-@import './variables';
-@import './mixins';
-@import './base';
-@import './components';
-@import './layout';
-@import './buttons';
-@import './typography';
-@import './components/sidebar';
-@import './components/login';
-
-@import './components/_loadingSpinner.scss';
+@import './variables';        // 1. Global variables
+@import './mixins';           // 2. Mixins for reusable code
+@import './base';             // 3. Global styles (resets, typography, etc.)
+@import './layout';           // 4. Layout styles (grid, flex)
+@import './buttons';          // 5. Button styles
+@import './typography';       // 6. Typography-related styles
+@import './components';       // 7. General component styles
+@import './components/sidebar'; // 8. Sidebar-specific styles
+@import './components/login';  // 9. Login-specific styles
+@import './components/_loadingSpinner.scss'; // 10. Loading spinner styles
+@import './pages/dataPage';   // 11. Page-specific styles (should be last)

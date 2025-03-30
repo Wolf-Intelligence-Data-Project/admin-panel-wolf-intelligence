@@ -12,6 +12,16 @@
   min-height: 3rem;
   padding: 0 4rem 0 4rem;
 }
+button:disabled {
+  background-color: $gray;
+  color: $gray-light;
+
+  &:hover {
+    cursor: not-allowed; 
+    background-color: $gray-light;
+    color: $white;
+  }
+}
 
 // ✅ Positive (Green)
 .button-positive {

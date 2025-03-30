@@ -34,7 +34,7 @@ export default function LoginPage() {
   };
 
   return (
-    <form className="login-container" onSubmit={handleLogin}>
+    <form className="login-container" onSubmit={handleLogin} noValidate>
       <h2>Wolf Intelligence</h2>
       <div className="input-group">
         <label htmlFor="email">E-post</label>

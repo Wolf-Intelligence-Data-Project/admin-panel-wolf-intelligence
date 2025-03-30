@@ -1,12 +1,14 @@
-"use client";  // Marking this file as a client-side component
+'use client'; // Marking this file as a client-side component
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth, AuthProvider } from "../context/authContext";
 import LoadingSpinner from "./components/LoadingSpinner";
 import Sidebar from "./components/Sidebar";
+import Header from "./components/Header";  // Import the Header component
 import "../../styles/global.scss";
 import { staticMetadata, generateDynamicMetadata } from './metadata'; // Import metadata
+import Head from "next/head";
 
 export default function RootLayout({ children, params }) {
   const [metadata, setMetadata] = useState(staticMetadata);  // Default to static metadata
@@ -18,7 +20,6 @@ export default function RootLayout({ children, params }) {
       setMetadata(dynamicMetadata);  // Set dynamic metadata
     };
 
-    // Call the function to set dynamic metadata
     fetchDynamicMetadata();
   }, [params]);  // Rerun the effect if params change
 
@@ -34,7 +35,6 @@ function AuthWrapper({ children, metadata }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
 
-  // Use effect to check auth status when the page is loaded
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -54,24 +54,32 @@ function AuthWrapper({ children, metadata }) {
 
   useEffect(() => {
     if (isAuthenticated === true) {
-      router.push("/dashboard"); // Redirect user to dashboard if authenticated
+      const publicRoutes = ["/login", "/signup"]; // Define public pages
+      if (publicRoutes.includes(router.pathname)) {
+        router.push("/dashboard"); // Redirect only if on a public page
+      }
     }
   }, [isAuthenticated, router]);
 
   return (
-    <html lang="en">
+    <html lang="sv">
       <head>
-      <title>{metadata.title}</title> {/* Use dynamic or static title */}
+        <title>{metadata.title}</title> 
         <meta name="description" content={metadata.description} />
       </head>
       <body>
         <div className="wrapper">
-          {isAuthenticated && <Sidebar />} {/* Show sidebar only when authenticated */}
-          {loading ? (
-            <LoadingSpinner /> // Show loading spinner while auth is being checked
-          ) : (
-            <div className="container">{children}</div>
-          )}
+          <Sidebar />
+          <div className="main-content">
+            <Header /> {/* Add the dynamic Header */}
+            {loading ? (
+              <LoadingSpinner /> // Show loading spinner while auth is being checked
+            ) : (
+              <div className="container">
+                {children} {/* Render page content */}
+              </div>
+            )}
+          </div>
         </div>
       </body>
     </html>
