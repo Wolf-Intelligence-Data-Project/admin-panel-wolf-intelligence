@@ -6,6 +6,8 @@
   @include theme(dark);
   overflow: hidden !important;
   z-index: 100;
+  position:relative;
+
   h3{
     margin-left: -7px;
    a{
@@ -16,6 +18,16 @@
       color: $gray-light;
     }
    }
+  }
+  .fixed-menu {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    width: 250px !important;
+    height: 100vh;
   }
 }
 

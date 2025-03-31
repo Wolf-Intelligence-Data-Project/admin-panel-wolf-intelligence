@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 // Handle GET (fetch product counts)
 export async function GET(req) {
   try {
+    const cookies = req.headers.get('cookie');
     // Create an HTTPS agent to bypass SSL verification for local development
     const agent = new https.Agent({
       rejectUnauthorized: false, // Disable SSL verification (for local dev only)
@@ -12,11 +13,12 @@ export async function GET(req) {
 
     // Make the API call to the backend
     const response = await axios.get('https://localhost:7036/api/product/count', {
+      headers: {
+        "Cookie": cookies,
+      },
       withCredentials: true, // Include credentials if needed
       httpsAgent: agent,     // Use the agent to handle SSL issues in local dev
     });
-
-    console.log("Backend response:", response.data);
 
     // Check if the response contains data
     if (response.data) {

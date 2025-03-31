@@ -1,4 +1,21 @@
 // 🌍 Global Styles
+*:focus {
+  outline: 3px solid #ff5733; // Custom orange outline
+  outline-offset: 3px;
+}
+
+// Alternative: Use :focus-visible for keyboard navigation only
+*:focus-visible {
+  outline: 3px solid #4CAF50; // Green outline when using Tab
+  outline-offset: 3px;
+  transition: outline 0.2s ease-in-out;
+}
+
+// Remove focus styles when clicking with a mouse
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
 
 html{
   height: 100%;
@@ -18,14 +35,17 @@ body {
 }
 
 input {
-  padding: 0 20px 0 10px;
+  padding: 0 25px 0 15px;
   min-height: 2.5rem;
   border-radius: 50px;
   min-width: 200px;
   border: none;
+  box-sizing: border-box;
+  width: 100%;
 
   &:focus {
     outline: none;
+    background-color: rgb(237, 255, 244);
   }
 }
 
@@ -46,7 +66,7 @@ li {
 }
 
 form {
+  position: relative;
   @include flex-column-center;
   gap: 20px;
 }
-

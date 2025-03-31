@@ -14,11 +14,8 @@ export async function POST(req) {
 
     // Forward the login data to your actual authentication API
     const response = await axios.post('https://localhost:7036/api/auth/login', { email, password }, {
-      withCredentials: true, 
       httpsAgent: agent
     });
-
-    console.log("Backend response:", response.data);  // Log the backend response data
 
     if (response.data.success) {
       // JWT token

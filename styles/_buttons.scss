@@ -11,6 +11,11 @@
   transition: all 0.3s ease-in-out;
   min-height: 3rem;
   padding: 0 4rem 0 4rem;
+  width: 100%;
+
+  &:active {
+    transform: scale(0.97); // Slight press effect
+    transition: transform 0.1s ease-in-out; }
 }
 button:disabled {
   background-color: $gray;

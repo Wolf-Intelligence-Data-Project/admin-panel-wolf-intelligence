@@ -3,15 +3,15 @@ import https from "https";
 
 export async function DELETE(req) {
   try {
-    const cookies = req.headers.get("cookie"); // ✅ Get cookies from request
+    const cookies = req.headers.get("cookie");
 
     const response = await axios.delete("https://localhost:7036/api/auth/logout", {
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookies, // ✅ Forward cookies explicitly
+        Cookie: cookies,
       },
       httpsAgent: new https.Agent({
-        rejectUnauthorized: false, // ❌ Remove this in production
+        rejectUnauthorized: false,
       }),
     });
 
@@ -19,7 +19,7 @@ export async function DELETE(req) {
       throw new Error(response.data?.message || "Logout failed.");
     }
 
-    console.log("✅ User successfully logged out.");
+    console.log("User successfully logged out.");
 
     // Clear the cookie
     return new Response(
@@ -33,7 +33,7 @@ export async function DELETE(req) {
       }
     );
   } catch (error) {
-    console.error("❌ Logout Error:", error.response?.data || error.message);
+    console.error("Logout Error:", error.response?.data || error.message);
 
     return new Response(
       JSON.stringify({ success: false, message: "An error occurred during logout." }),

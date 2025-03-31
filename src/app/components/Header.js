@@ -19,7 +19,7 @@ export default function Header() {
       case "/data":
         return <h1>Datahantering</h1>;
       default:
-        return <h1>Välkommen till Adminpanellen</h1>;
+        return <h1>Wolf Intelligence</h1>;
     }
   };
 

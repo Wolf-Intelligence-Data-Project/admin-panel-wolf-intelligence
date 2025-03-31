@@ -4,34 +4,34 @@ import Link from "next/link";
 import { usePathname } from "next/navigation"; // ✅ Get the current path
 import axios from "axios";
 import { useAuth } from "../../context/authContext"; 
+import { useRouter } from 'next/router'; 
 
 export default function Sidebar() {
   const { isAuthenticated, setIsAuthenticated } = useAuth(); 
   const pathname = usePathname(); // ✅ Get the current URL path
-
+  const router = useRouter();
+  
   const handleLogout = async () => {
     try {
-      const res = await axios.delete("/api/auth/logout", {
+      const res = await axios.delete("../api/auth/logout", {
         withCredentials: true,
       });
 
-      if (res.status === 200) {
-        setIsAuthenticated(false);
-        router.push("/");
-      } else {
-        alert(res.data?.message || "Logout failed.");
-      }
+      setIsAuthenticated(false);
+      router.push("/");
+
     } catch (error) {
       console.error("Logout error:", error.response?.data || error.message);
-      alert(error.response?.data?.message || "An error occurred during logout.");
     }
   };
 
-  if (!isAuthenticated) return null; 
+  if (!isAuthenticated) return (<div></div> );
 
   return (
     <div className="sidebar">
+      <div className="fixed-menu">
      <h3><Link href='/dashboard'>Wolf Intelligence</Link></h3>
+     
       <ul>
       <Link href="/dashboard">
   <span className={pathname === "/dashboard" ? "active" : ""}>Översikt</span>
@@ -56,6 +56,7 @@ export default function Sidebar() {
           <p>All Rights Reserved.</p>
         </div>
       </footer>
+      </div>
     </div>
   );
 }

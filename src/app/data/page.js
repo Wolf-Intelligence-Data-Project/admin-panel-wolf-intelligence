@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import axios from 'axios';
 import * as d3 from 'd3';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const ProductsPage = () => {
   const [totalProductsCount, setTotalProductsCount] = useState(0);
@@ -11,15 +12,19 @@ const ProductsPage = () => {
   const [soldPercentage, setSoldPercentage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState(null);
   const chartRef = useRef(null);
   const [file, setFile] = useState(null);
-  const [uploadMessage, setUploadMessage] = useState('');
+  const fileInputRef = useRef(null);
+
 
   useEffect(() => {
     const fetchProductCounts = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('/api/products/count');
+         const response = await axios.get('/api/products/count', {
+        withCredentials: true, // Ensure cookies are sent
+      });
         setTotalProductsCount(response.data.totalProductsCount ?? 0);
         setUnsoldProductsCount(response.data.unsoldProductsCount ?? 0);
         setSoldProductsCount(response.data.soldProductsCount ?? 0);
@@ -28,7 +33,6 @@ const ProductsPage = () => {
       } catch (err) {
         setError('Ett fel uppstod vid hämtning av produktdata.');
       } finally {
-        console.log(soldPercentage, unsoldPercentage);
         setLoading(false);
       }
     };
@@ -36,8 +40,9 @@ const ProductsPage = () => {
     fetchProductCounts();
   }, []);
 
+  
   const data = [
-    { name: 'Totalt antal rader', count: totalProductsCount },
+    { name: 'Totalt antal i databasen', count: totalProductsCount },
     { name: 'Ej sålda rader', count: unsoldProductsCount },
     { name: 'Sålda rader', count: soldProductsCount },
   ];
@@ -49,8 +54,8 @@ const ProductsPage = () => {
   
   const chartColors = {
     total: "#6C8EBF",   // Blue
-    unsold: "#F76C6C",   // Red
-    sold: "#4CAF50",     // Green
+    unsold: "#F28C8C",   // Red
+    sold: "#7DC77D",     // Green
   };
   
   const barChart = () => {
@@ -103,7 +108,7 @@ const ProductsPage = () => {
       gradientTotal.append("stop")
         .attr("offset", "0%")
         .attr("stop-color", chartColors.total) // Use dynamic color
-        .attr("stop-opacity", 0.2);
+        .attr("stop-opacity", 0.1);
   
       gradientTotal.append("stop")
         .attr("offset", "100%")
@@ -121,7 +126,7 @@ const ProductsPage = () => {
       gradientUnsold.append("stop")
         .attr("offset", "0%")
         .attr("stop-color", chartColors.unsold) // Use dynamic color
-        .attr("stop-opacity", 0.2);
+        .attr("stop-opacity", 0.1);
   
       gradientUnsold.append("stop")
         .attr("offset", "100%")
@@ -139,7 +144,7 @@ const ProductsPage = () => {
       gradientSold.append("stop")
         .attr("offset", "0%")
         .attr("stop-color", chartColors.sold) // Use dynamic color
-        .attr("stop-opacity", 0.2);
+        .attr("stop-opacity", 0.1);
   
       gradientSold.append("stop")
         .attr("offset", "100%")
@@ -157,22 +162,28 @@ const ProductsPage = () => {
         .attr("height", 0)
         .attr("fill", d => {
           // Apply gradients based on exact category names in data
-          if (d.name === 'Totalt antal rader') return "url(#gradTotal)";
+          if (d.name === 'Totalt antal i databasen') return "url(#gradTotal)";
           if (d.name === 'Ej sålda rader') return "url(#gradUnsold)";
           return "url(#gradSold)";
         })
         .attr("rx", "8px")  // Apply border-radius only to the top corners
         .attr("ry", "8px")  // Apply vertical radius to top corners only
         .on("mouseover", function (event, d) {
-          d3.select(this).style("opacity", 0.7);
+          d3.select(this).style("opacity", 1);
         
   // Show tooltip with the name and the total product count
-tooltip.transition().duration(200).style("opacity", .9);
-tooltip.html(`${d.name}: ${formatNumber(d.count)}`)
-  .style("left", `${event.pageX + 10}px`)  // Increase the left offset for more space
-  .style("top", `${event.pageY - 35}px`)   // Adjust top to give a bit more space above the cursor
-  .style("padding", "10px")                // Increased padding
-  .style("font-size", "14px");             // Optional: Adjust font size for better readability
+  tooltip.transition().duration(200).style("opacity", 0.9);
+tooltip.html(
+  d.name === 'Sålda rader'
+    ? `Sålda: ${soldPercentage.toFixed(2)}%`
+    : d.name === 'Ej sålda rader'
+    ? `Ej sålda: ${unsoldPercentage.toFixed(2)}%`
+    : `${d.name}: ${formatNumber(d.count)}`
+)
+  .style("left", `${event.pageX + 10}px`)  
+  .style("top", `${event.pageY - 35}px`)   
+  .style("padding", "10px")                
+  .style("font-size", "14px");
 })
 .on("mouseout", function () {
   d3.select(this).style("opacity", 1);
@@ -246,17 +257,20 @@ svg.on("mousemove", function (event) {
         .remove();
     }
   };
-  
-  
+ 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
   const handleFileUpload = async () => {
     if (!file) {
-      setUploadMessage('Ingen fil vald');
+      setError('Ingen fil vald');
       return;
     }
+
+    setLoading(true);  // Show loading spinner/message
+    setError(null);    // Clear previous errors
+    setSuccessMessage(null); // Clear previous success messages
 
     const formData = new FormData();
     formData.append('file', file);
@@ -264,15 +278,24 @@ svg.on("mousemove", function (event) {
     try {
       const response = await axios.post('/api/products/import-excel', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
-        withCredentials: true,
+        withCredentials: true,  // Ensure cookies are sent
       });
 
-      setUploadMessage(response.data.message || 'Products imported successfully.');
+      setLoading(false);  // Hide loading spinner/message
+      setSuccessMessage(response.data.message || 'Produkter importerade framgångsrikt.');
+      
+      // Reset the file input after successful upload
+      fileInputRef.current.value = ''; // Reset the file input value
+
+      // Reset the file state
+      setFile(null);
     } catch (error) {
+      setLoading(false);  // Hide loading spinner/message
       console.error('Error importing products:', error);
-      setUploadMessage('An error occurred while importing products.');
+      setError('Ett fel inträffade vid import av produkter.');
     }
   };
+
   const [animatedTotal, setAnimatedTotal] = useState(0);
   const [animatedUnsold, setAnimatedUnsold] = useState(0);
   const [animatedSold, setAnimatedSold] = useState(0);
@@ -332,44 +355,43 @@ svg.on("mousemove", function (event) {
    const formattedSold = Math.round(animatedSold);
    const formattedUnsoldPercentage = animatedUnsoldPercentage.toFixed(1);
    const formattedSoldPercentage = animatedSoldPercentage.toFixed(1);
+
+
+   if (error) {
+    return <div className="error">{error}</div>;
+  }
   
-  if (loading) {
-    return <div>Loading product data...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-  if (loading) return <div>Laddar...</div>;
-  if (error) return <div>{error}</div>;
-
  
 return (
   <div className="data-section">
     <div className="box">
-      <h2 style={{ textAlign: "center", marginBottom: "30px" }}>Dataöversikt</h2>
+      <h2>Dataöversikt</h2>
       <svg ref={chartRef}></svg>
     </div>
-    <div>
-    <div className="box">
-      <div className='row'>
-        <strong>Totalt antal företagsuppgifter:</strong>
-        <h3 style={{ color: chartColors.total }}>{formattedTotal}</h3>
+    <div className='box'>
+    <div className="stats-box">
+        <h2 className="stats-title">Företagsuppgifter Översikt</h2>
+        <div className="stats-details">
+          <div className="stat-row">
+            <strong className="stat-label"style={{ color: chartColors.unsold }}>Ej sålda:</strong>
+            <h3 className="stat-percentage" style={{ color: chartColors.unsold }}>{formattedUnsoldPercentage}%</h3>
+            <strong className="stat-value" style={{ color: chartColors.unsold }}>{formattedUnsold}</strong>
+          </div>
+          <div className="stat-row" >
+            <strong className="stat-label" style={{ color: chartColors.sold }}>Sålda:</strong>
+            <h3 className="stat-percentage" style={{ color: chartColors.sold }}>{formattedSoldPercentage}%</h3>
+            <strong className="stat-value" style={{ color: chartColors.sold }}>{formattedSold}</strong>
+          </div>
+          <div className="stat-row">
+            <strong className="stat-label" style={{ color: chartColors.total }}>Totalt:</strong>
+            <h3 className="stat-value" style={{ color: chartColors.total }}>{formattedTotal}</h3>
+          </div>
+        </div>
       </div>
-      <div className='row'>
-        <strong>Ej sålda företagsuppgifter:</strong>
-        <h3 style={{ color: chartColors.unsold }}>{formattedUnsold}</h3>
-        <h3 style={{ color: chartColors.unsold }}>({formattedUnsoldPercentage}%)</h3>
-      </div>
-      <div className='row'>
-        <strong>Sålda företagsuppgifter:</strong>
-        <h3 style={{ color: chartColors.sold }}>{formattedSold}</h3>
-        <h3 style={{ color: chartColors.sold }}>({formattedSoldPercentage}%)</h3>
-      </div>
-    </div>
-      <div className="box">
-        <h3>Importera fler företag</h3>
-        <form className='upload-form'>
+
+      <div>
+      <h3>Importera fler företag</h3>
+      <form className="upload-form">
         <label htmlFor="file-upload">Välj en Excel-fil</label>
         <input
           type="file"
@@ -377,17 +399,25 @@ return (
           onChange={handleFileChange}
           id="file-upload"
           className="hidden-file-input"
+          ref={fileInputRef}  // Attach the ref to the file input
         />
-          <button
-            className="button-positive"
-            onClick={handleFileUpload}
-            disabled={!file} // Disable button if no file is selected
-          >
-          Importera filen
+        <button
+          className="button-positive"
+          type="button" // Avoid default form submit
+          onClick={handleFileUpload}
+          disabled={!file || loading} // Disable button if no file is selected or if loading
+        >
+          {loading ? <LoadingSpinner /> : 'Importera filen'}  {/* Show spinner inside button */}
         </button>
-        </form>
-        {uploadMessage && <div className="error">{uploadMessage}</div>}
+      </form>
+      <div>
+        {error ? (
+          <div className="error">{error}</div>
+        ) : successMessage ? (
+          <div className="success">{successMessage}</div>
+        ) : null}
       </div>
+    </div>
     </div>
   </div>
 );

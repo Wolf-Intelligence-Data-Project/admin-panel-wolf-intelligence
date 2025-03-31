@@ -21,4 +21,16 @@
       transform: rotate(360deg);
     }
   }
-  
+  .button .spinnerContainer {
+    position: fixed;
+    background-color: rgba(24, 24, 24, 0.3);
+    width: 100%;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+    transform: translateX(50%), translateY(50%);
+    .spinner {
+      border: 10px solid rgba(255, 255, 255, 0.3);
+      border-top: 10px solid #3498db;
+    }
+  }
