@@ -1,52 +1,57 @@
 import axios from 'axios';
-import https from 'https'; // Import https to create the agent
+import https from 'https';
 
-// Handle POST (login)
 export async function POST(req) {
   try {
-    const { email, password } = await req.json(); // Parse the incoming JSON body
+    const { email, password } = await req.json();
     console.log("Received data:", { email, password });
 
-    // Configure Axios to ignore SSL certificate errors (for local development only)
     const agent = new https.Agent({
-      rejectUnauthorized: false,  // Disable SSL verification
+      rejectUnauthorized: false, // Disable SSL verification for local development
     });
 
-    // Forward the login data to your actual authentication API
+    // Forward the login data to the authentication API
     const response = await axios.post('https://localhost:7036/api/auth/login', { email, password }, {
-      httpsAgent: agent
+      httpsAgent: agent,
+      validateStatus: () => true, // Always resolve response, even for 400/401
     });
 
-    if (response.data.success) {
-      // JWT token
-      const jwtToken = response.data.jwt;  // Ensure this is properly set and not undefined
+    console.log("Backend response:", response.data);
 
-      if (!jwtToken) {
-        throw new Error('JWT Token is missing');
-      }
+    // Log the role explicitly
+    if (response.data.role) {
+      console.log("User role received from backend:", response.data.role);
+    } else {
+      console.warn("No role received from backend.");
+    }
 
-      // Manually set the cookie header without `cookie` library
-      const cookieHeader = `AccessToken=${jwtToken}; HttpOnly; Secure=${process.env.NODE_ENV === 'production'}; SameSite=None; Path=/; Max-Age=3600; Expires=${new Date(Date.now() + 60 * 60 * 1000).toUTCString()}`;
+    // If the backend includes an HttpOnly cookie in the response, forward it directly to the client
+    if (response.headers['set-cookie']) {
+      const { message, role } = response.data; // Destructure to get role
 
-      // Set the JWT token in an HTTP-only cookie using the manual header
       return new Response(
-        JSON.stringify({ success: true }),
+        JSON.stringify({
+          success: true,
+          message: message || 'Login successful.',
+          role: role,  // Send the role to the client
+        }),
         {
           status: 200,
           headers: {
-            'Set-Cookie': cookieHeader,
+            'Set-Cookie': response.headers['set-cookie'], // Forward the HttpOnly cookie directly from backend
           },
         }
       );
-    } else {
-      console.error("Error from backend:", response.data.errorMessage);  // Log the error message from backend
-      return new Response(
-        JSON.stringify({ success: false, errorMessage: response.data.errorMessage }),
-        { status: 401 }
-      );
     }
+
+    // Handle cases where the backend fails or returns an error
+    console.error("Error from backend:", response.data.errorMessage);
+    return new Response(
+      JSON.stringify({ success: false, errorMessage: response.data.errorMessage }),
+      { status: 401 }
+    );
   } catch (error) {
-    console.error("Error in API route:", error);  // Log the actual error
+    console.error("Error in API route:", error);
     return new Response(
       JSON.stringify({ success: false, errorMessage: 'An error occurred during login.' }),
       { status: 500 }

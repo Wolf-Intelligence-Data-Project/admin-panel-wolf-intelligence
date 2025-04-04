@@ -1,0 +1,61 @@
+.admin-section {
+    @include flex-column-center;
+    gap: 50px;
+    height: 100%;
+    width: 100%;
+    margin-top: -50px;
+
+    .list {
+        .card {
+          .info-item {
+           
+            // First child styles
+            &:first-child {
+              box-shadow: 0 0 0 rgba(0, 0, 0, 0) !important;
+              background-color: rgba(0, 0, 0, 0) !important;
+              flex: 1.5;
+            }
+      
+            // Second child styles
+            &:nth-child(2) {
+              flex: 1;
+            }
+      
+            // Fourth child styles
+            &:nth-child(4) {
+              flex: 2;
+            }
+      
+            // Apply styles to the last .info-item, but not the first .info-item of the .card
+            &:last-child {
+              border: none;
+              flex: 1;
+              width: fit-content;
+      
+              button {
+                width: 7rem;
+                border: none;
+                padding: 0 !important;
+                font-size: 13px;
+              }
+            }
+           
+          }
+          
+        }
+        .card:not(:first-of-type).info-item:last-child {
+            @include flex-center;
+            justify-content: end;}
+            flex:initial;
+      }
+      
+.section {
+    @include flex-column-left;
+    gap: 20px;
+    width: 35%;
+    select {
+        width: 100%;
+        margin-left: 10px;
+    }
+  }
+}

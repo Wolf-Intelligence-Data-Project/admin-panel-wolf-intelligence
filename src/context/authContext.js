@@ -7,22 +7,26 @@ const AuthContext = createContext();
 // AuthProvider Component
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null); // Track authentication state
+  const [userRole, setUserRole] = useState(null); // Track user role
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const res = await axios.get("/api/auth/status", { withCredentials: true });
-        setIsAuthenticated(res.data.isAuthenticated); // Update state based on server response
+        setIsAuthenticated(res.data.isAuthenticated); 
+        setUserRole(res.data.role); 
+        console.log("User role set:", res.data.role);
       } catch (error) {
-        setIsAuthenticated(false); // In case of error, set it to false
+        setIsAuthenticated(false);
+        setUserRole(null);
       }
     };
 
     checkAuth();
-  }, []); // Runs only once on initial load
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated, userRole, setUserRole }}>
       {children}
     </AuthContext.Provider>
   );

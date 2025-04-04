@@ -1,15 +1,14 @@
-'use client'; // Marking this file as a client-side component
-
+"use client"
 import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation"; // Import usePathname
-import { useAuth, AuthProvider } from "../context/authContext";
+import { useRouter, usePathname } from "next/navigation";
+import { useAuth, AuthProvider } from "../context/authContext"; // Adjust the import path
 import LoadingSpinner from "./components/LoadingSpinner";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import "../../styles/global.scss";
 import { staticMetadata, generateDynamicMetadata } from './metadata';
-import axios from "axios"; // Ensure axios is imported
 
+// Root Layout
 export default function RootLayout({ children, params }) {
   const [metadata, setMetadata] = useState(staticMetadata);
 
@@ -23,49 +22,46 @@ export default function RootLayout({ children, params }) {
   }, [params]);
 
   return (
-    <AuthProvider>
+    <AuthProvider>  {/* Wrap the whole app with the AuthProvider */}
       <AuthWrapper metadata={metadata}>{children}</AuthWrapper>
     </AuthProvider>
   );
 }
 
+// AuthWrapper component
 function AuthWrapper({ children, metadata }) {
-  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const { isAuthenticated, userRole } = useAuth();
   const router = useRouter();
-  const pathname = usePathname(); // Get the current route
+  const pathname = usePathname();
   const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await axios.get("/api/auth/status", { withCredentials: true });
-        setIsAuthenticated(res.data.isAuthenticated);
-      } catch (error) {
-        setIsAuthenticated(false);
-      } finally {
-        setLoading(false);
-      }
-    };
 
+  useEffect(() => {
     if (isAuthenticated === null) {
-      checkAuth(); // Run only once on initial load
+      setLoading(true); // Show loading while checking authentication
+    } else {
+      setLoading(false);
     }
-  }, [isAuthenticated, setIsAuthenticated]);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (!loading) {
-      if (isAuthenticated === false && pathname !== "/") {
-        router.replace("/"); // Redirect unauthenticated users to home ("/")
+      if (isAuthenticated === false && pathname !== "/" && pathname !== "/password-change") {
+        router.replace("/"); // Redirect to home if not authenticated
       } else if (isAuthenticated === true && pathname === "/") {
-        router.replace("/dashboard"); // Redirect authenticated users to "/dashboard"
+        router.replace("/dashboard"); // Redirect to dashboard if authenticated
+      }
+  
+      // Example of role-based redirect or access control
+      if (isAuthenticated && userRole !== "admin" && pathname.startsWith("/admin")) {
+        router.replace("/"); // Prevent non-admin users from accessing admin routes
       }
     }
-  }, [isAuthenticated, loading, pathname, router]);
+  }, [isAuthenticated, userRole, loading, pathname, router]);
 
   return (
     <html lang="sv">
-     <head>
-        <title>{metadata.title}</title> 
+      <head>
+        <title>{metadata.title}</title>
         <link rel="icon" href="/favicon.png" type="image/png" />
         <meta name="robots" content={metadata.robots} />
         <meta name="author" content="Wolf Intelligence" />
@@ -76,10 +72,9 @@ function AuthWrapper({ children, metadata }) {
           <Sidebar />
           <div className="main-content">
             <Header />
-
-              <div className="container">
-                {children} {/* Render page content */}
-              </div>
+            <div className="container">
+              {children}
+            </div>
           </div>
         </div>
       </body>

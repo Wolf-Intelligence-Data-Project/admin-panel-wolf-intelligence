@@ -1,0 +1,61 @@
+// Styling for the toolbar
+.toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 5px;
+    flex-wrap: wrap;
+  
+    // Style for each button
+    .toolbar-btn {
+      padding: 8px 12px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #f0f0f0;
+      transition: background-color 0.3s ease;
+      color: #333;
+  
+      &.active {
+        background-color: #007bff;
+        color: #fff;
+      }
+  
+      &:hover {
+        background-color: #e0e0e0;
+      }
+  
+      select {
+        padding: 5px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        transition: background-color 0.3s ease;
+  
+        &:hover {
+          background-color: #f9f9f9;
+        }
+      }
+    }
+  }
+  
+  // Contenteditable area styling
+  div[contenteditable="true"] {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-height: 150px;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    outline: none;
+  
+    &:focus {
+      border-color: #007bff;
+    }
+  }
+  

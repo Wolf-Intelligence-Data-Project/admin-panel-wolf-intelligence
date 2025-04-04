@@ -10,7 +10,8 @@ body {
 // 🏷️ Headings
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
-  margin-bottom: $spacing-small;
+  margin: 0;
+  padding: 0;
 }
 
 h1 { font-size: 2rem; }
@@ -22,7 +23,6 @@ h6 { font-size: 1rem; }
 
 // 📝 Paragraphs
 p {
-  margin-bottom: $spacing-small;
 }
 
 a {

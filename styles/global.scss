@@ -6,7 +6,12 @@
 @import './buttons';          // 5. Button styles
 @import './typography';       // 6. Typography-related styles
 @import './components';       // 7. General component styles
+@import './components/richTextEditor';
 @import './components/sidebar'; // 8. Sidebar-specific styles
 @import './components/login';  // 9. Login-specific styles
 @import './components/_loadingSpinner.scss'; // 10. Loading spinner styles
 @import './pages/dataPage';   // 11. Page-specific styles (should be last)
+@import './pages/usersPage';
+@import './pages/ordersPage';
+@import './pages/adminPage';
+@import './pages/settingsPage';

@@ -10,28 +10,43 @@ export default function LoginPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { setIsAuthenticated } = useAuth(); // Assuming setIsAuthenticated updates the auth state in context
+  const { setIsAuthenticated, setUserRole } = useAuth(); // Assuming setIsAuthenticated updates the auth state in context
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+    setError("");
+  
     try {
-      const response = await axios.post("/api/auth/login", { email, password });
-
+      const response = await axios.post("/api/auth/login", { email, password }, {
+        validateStatus: () => true, // Always resolve response so we can handle errors manually
+      });
+  
+      console.log("Login response:", response.data); // Debugging line
+  
+      // Check if the backend says the password needs to be changed
+      if (response.data.redirectToChangePassword) {
+        router.push("/password-change");
+        return;
+      }
+  
       if (response.data.success) {
-        setIsAuthenticated(true); // Set authentication to true after successful login
+        setIsAuthenticated(true);
+        setUserRole(response.data.role); // ✅ Save role to context
         router.push("/dashboard");
       } else {
-        setError(response.data.errorMessage);
+        setError(response.data.errorMessage || "Invalid login credentials.");
       }
     } catch (err) {
       setError("An error occurred during login.");
-      console.error(err);
+      console.error("Login error:", err);
     } finally {
       setLoading(false);
     }
   };
+  
+  
+  
 
   return (
     <form className="login-container" onSubmit={handleLogin} noValidate>
