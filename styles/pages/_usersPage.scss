@@ -5,14 +5,31 @@
     margin: 0;
     margin-top: -50px;
     padding: 0;
+    .list {
+     
+      .card{
+        flex: 1;
+        cursor: pointer;
+        &:hover{
+          background-color: rgb(223, 255, 240);
+        }
+        &:first-child {
+          background-color: red($color: #000000);
+          cursor:auto;
+          &:hover{
+          background-color: rgba(0,0,0,0);}
+        }
+      }
+    }
 }
 
 .user-list {
     flex-wrap: wrap;
-    width: 80%;  
+    width: 100%;  
     margin-top: 50px !important;
     
   }
+
   .user-table{
     @include flex-space-between;
 
@@ -41,42 +58,7 @@
         text-align: end;
     }
   }
-  .user-card {
-    @include flex-space-between;
-    align-items: center;
-    background-color: #fff;
-    padding: 10px 30px;
-    border-radius: 50px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    width: 100%;
-    transition: background-color 0.2s ease-in-out;
-    box-sizing: border-box;
-    &:hover {
-        background-color: rgba(216, 255, 235, 0.5);
-    }
-    div{
-        flex:1;
-    }
-    :nth-child(2){
-        @include flex-center;
-        text-align: center;
-        flex: 2;
-    }
-    :nth-child(3){
-        @include flex-center;
-        text-align: center;
-        flex: 2;
-    }
-    :nth-child(4){
-      @include flex-center;
-      text-align: center;
-      flex: 1;
-  }
-    :last-child {
-        text-align: end;
-    }
-  }
+
   
   .modal-overlay {
     position: fixed;
@@ -187,14 +169,18 @@
     @include flex-column-left;
     flex: 1;
     min-width: 25%;
-    background: $gray-light;
+    box-shadow: inset 1px 2px 2px rgba(0, 0, 0, 0.2);
     padding: 10px;
-    border-radius: 6px;
+    border-radius: 13px;
     text-align: start;
     font-size: 13px;
+    a{
+      padding: 0;
+      margin: 0;
+      font-size: 20px;
+    }
   }
   .address-box {
-    background: $gray-light;
     padding: 10px;
     border-radius: 5px;
     margin: 5px 0;
@@ -207,7 +193,8 @@
   }
   
   .users-overview {
-    @include flex-space-around;
+    display: flex;
+    justify-content: end;
     width: 100% !important;
     flex-wrap: wrap;
     .box {
@@ -218,6 +205,7 @@
         width: 100%;
         box-sizing: border-box;
     }
+  
   }
 
   .user-stats {
@@ -251,4 +239,12 @@
     font-size: 14px;
     color: gray;
   }
-  
+  .aa {
+    @include flex-space-between;
+    margin-bottom: 15px;
+    a{
+      
+      padding:0;
+      margin: 0;
+    }
+  }

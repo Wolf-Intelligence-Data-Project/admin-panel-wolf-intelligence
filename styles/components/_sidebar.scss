@@ -1,13 +1,11 @@
 
 .sidebar {
   @include flex(column, flex-start, center);
-  width: 250px !important;
   height: 100% !important;
   @include theme(dark);
   overflow: hidden !important;
   z-index: 100;
-  position:relative;
-
+  width: 19rem;
   h3{
     
     margin: 0;
@@ -26,12 +24,12 @@
    }
   }
   .fixed-menu {
-    position: fixed;
     @include flex-column-center;
+    right: 100%;
+    min-width: 250px;
     gap: 20px;
     justify-content: space-between;
     box-sizing: border-box;
-    width: 250px !important;
     height: 100vh;
     a{
     
@@ -46,7 +44,7 @@
   list-style: none;
   margin: 10px 0 0 0;
   box-sizing: border-box;
-  width: 100%;
+  min-width: 100% !important;
   padding: 0;
   
   gap: 20px;
@@ -55,11 +53,10 @@
 .sidebar a {
   padding-right: 30px;
   @include flex-space-between;
-  width: 100%;
   color: $white;
   text-decoration: none;
   text-align: left;
-  width: 100%;
+  min-width: 100%;
   box-sizing: border-box !important;
   transition: background-color 0.3s ease-in-out;
   height: 50px;

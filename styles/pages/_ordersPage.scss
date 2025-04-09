@@ -1,6 +1,7 @@
 .orders-section {
     @include flex-column-center;
     max-width: 100%;
+    width: 100%;
     .search-wrapper{
         box-sizing: border-box;
         @include flex-center;
@@ -31,9 +32,81 @@
            }
         }
     }
-    .list{
-        .card{
-            div {font-size: 13px !important;}
+    .modal-overlay{
+        a{
+            display: inline-block;
+            color: rgb(63, 117, 179);
+            &:hover{
+                color: rgb(93, 151, 217);
+            }
         }
     }
+    .list{
+        .card{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            a{
+                color: $green-dark;
+                &:hover{
+                    color: $green;
+                    text-decoration: underline;
+                }
+            }
+
+            div {font-size: 13px !important;}
+
+    
+            .info-item{
+                &:first-child{
+                    @include flex-center;
+                    flex: 0.3;
+                    max-width: 30px;
+                  }
+                white-space: nowrap;        /* Prevent text from wrapping */
+                overflow: hidden;           /* Hide the overflowing text */
+                text-overflow: ellipsis; 
+                &:nth-child(2){
+                    align-items: center;
+                    display: inline-block;       /* Keeps text in a single line */
+                white-space: nowrap;         /* Prevent text from wrapping */
+                overflow: hidden;            /* Hide the overflowing text */
+                text-overflow: ellipsis;     /* Add the "..." when the text overflows */
+                max-width: 150px;      
+                padding-top: 0.65rem;
+                }
+
+                .show-customer{
+                    @include flex-space-between;
+                    width: 100%;
+                }
+                
+                                &:first-child{
+                                flex:1;
+                                
+                            }}
+                            &:hover{
+                                cursor: pointer;
+                                background-color: rgba(224, 255, 233, 0.5);
+                            }
+                        }
+                    }
+                }
+
+.show-customer{
+    display:flex;
+    justify-content: space-between;
+    width: 100%;
+    div{
+        max-width: 20px;
+        display: flex;
+        justify-content: space-between;
+        position: initial;
+    }
 }
+
+.aaa{
+    @include flex-space-between;
+    width: 100%;
+    text-align: start;
+  }

@@ -18,6 +18,8 @@ export default function Header() {
         return <h1>Orderhantering</h1>;
       case "/data":
         return <h1>Datahantering</h1>;
+        case "/settings":
+        return <h1>Profilinställningar</h1>;
       default:
         return <h1>Wolf Intelligence</h1>;
     }

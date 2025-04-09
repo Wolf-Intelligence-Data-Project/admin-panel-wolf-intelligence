@@ -6,6 +6,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import "../../styles/global.scss";
+import { OrderProvider } from "@/context/orderContext";
 import { staticMetadata, generateDynamicMetadata } from './metadata';
 
 // Root Layout
@@ -58,6 +59,7 @@ function AuthWrapper({ children, metadata }) {
     }
   }, [isAuthenticated, userRole, loading, pathname, router]);
 
+  
   return (
     <html lang="sv">
       <head>
@@ -69,11 +71,15 @@ function AuthWrapper({ children, metadata }) {
       </head>
       <body>
         <div className="wrapper">
-          <Sidebar />
+          {/* Only render Sidebar if user is authenticated */}
+
+          {isAuthenticated && <Sidebar />}
           <div className="main-content">
             <Header />
             <div className="container">
+              <OrderProvider>
               {children}
+              </OrderProvider>
             </div>
           </div>
         </div>

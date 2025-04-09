@@ -190,9 +190,9 @@ export default function ModeratorsManagementPage() {
 
                                 {/* Delete Button */}
                                 <div className="info-item">
-                                    <button className="button-negative" onClick={() => handleDeleteClick(mod.adminId)}>
+                                    <a onClick={() => handleDeleteClick(mod.adminId)}>
                                         <FontAwesomeIcon icon={faTrash} /> Ta bort
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         ))

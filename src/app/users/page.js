@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { useOrderContext } from '../../context/orderContext.js';
 import axios from 'axios';
 import LoadingSpinner from '../components/LoadingSpinner';
 import BarChart from "../components/BarChart";
@@ -27,10 +29,10 @@ export default function UserManagementPage() {
   const [message, setMessage] = useState('');
   const containerRef = useRef(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);  // Modal visibility
-  const [userIdToDelete, setUserIdToDelete] = useState(null); // User ID to delete
-
+  const [userIdToDelete, setUserIdToDelete] = useState(null); 
   const closeModal = () => setSelectedUser(null);
-    
+  const { setUserId } = useOrderContext();
+
   const chartData = useMemo(() => [
     { name: "Totalt", count: totalCount },
     { name: "Företagskonton", count: companyAccountsCount },
@@ -278,67 +280,88 @@ const handleConfirmDelete = () => {
     }
 };
 
+const router = useRouter();
+
+
+// In your first page component where the user is selected
+const handleFindOrdersClick = () => {
+  if (selectedUser?.userId) {
+    setUserId(selectedUser.userId);  // This sets the userId in context
+    router.push('/orders');  // Redirect to orders page
+  }
+};
+
+
+
 
   return (
     <div className="users-section">
       {message && <p>{message}</p>}
 
-      <div className='users-overview'>
-        <div className='user-stats'>
-          <BarChart data={chartData} width={450} height={250} />
-        </div>
-      </div>
-      <div className='search-bar' style={{ position: "relative", width: "300px" }}>
-            <h4>Hitta användare:</h4>
-          <input
+        <div className='search-bar'>
+          <div className='search'>
+<h2>Användarlist</h2>
+        <input
             type="text"
             placeholder="Skriv e-post / organisationsnummer / personnummer / namn / företagsnamn"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-          />
+          /></div>
+            <div className='users-overview'>
+        <div className='user-stats'>
+          <BarChart data={chartData} width={450} height={250} />
+      </div>
+      </div> 
+</div>      <div className="list">
+        <div className="card">
+          <strong className="info-item">Namn</strong>
+          <strong  className="info-item">E-post</strong>
+          <strong className="info-item">Bransch</strong>
+          <strong  className="info-item">Antal ordrar</strong>
+          <strong  className="info-item">Typ av konto</strong>
         </div>
-      {/* Users list */}
-      <div className="user-list">
-        <h2>Användarlist</h2>
-       
-
-        <div className="user-table">
-          <strong>Namn</strong>
-          <strong>E-post</strong>
-          <strong>Bransch</strong>
-          <strong>Antal ordrar</strong>
-          <strong>Typ av konto</strong>
-        </div>
-
-        <div>
+        
         {UsersLoading ? (
-            <LoadingSpinner />
-            ) : error ? (
-            <p>{error}</p>
-            ) : (
-            // Check if there are no users to display
-            (searchQuery.length > 0 ? foundUsers : users)?.length === 0 ? (
-                <p>Inga användare hittades</p> // Show message if no users found
-            ) : (
-                // Render either search results or all users
-                (searchQuery.length > 0 ? foundUsers : users)?.map((user, index) => (
-                <div
-                    className="user-card"
-                    key={user.userId || `user-${index}`}
-                    onClick={() => getUserDetails(user.userId)} // Fetch details on click
-                >
-                 <div>{user.isCompany ? user.companyName : user.fullName}</div>
-                <div>{user.email}</div>
-                <div>{user.isCompany ? user.businessType : ""}</div>
-                <div>{user.orderCount || "0"}</div>
-                <div>{user.isCompany ? "Företag" : "Privat"}</div>
-
-                </div>
-                ))
-            )
-            )}
+  <LoadingSpinner />
+) : error ? (
+  <p>{error}</p>
+) : (
+  // Check if there are no users to display
+  (searchQuery.length > 0 ? foundUsers : users)?.length === 0 ? (
+    <p>Inga användare hittades</p> // Show message if no users found
+  ) : (
+    (searchQuery.length > 0 ? foundUsers : users)?.map((user, index) => (
+      <div key={user.userId || `user-${index}`} className="card"  onClick={() => getUserDetails(user.userId)}>
+        <div
+          className="info-item"
+          onClick={() => getUserDetails(user.userId)} // Fetch details on click
+        >
+          {index + 1} {/* Display user index */}
+        </div>
+        <div
+          className="info-item"
+          onClick={() => getUserDetails(user.userId)} // Fetch details on click
+        >
+          {user.isCompany ? user.companyName : user.fullName}
+        </div>
+        <div className="info-item">
+          {user.isCompany ? user.businessType : ""}
+        </div>
+        <a
+          className="info-item"
+          onClick={() => handleFindOrdersClick(user)}
+        >
+          {user.orderCount || "0"}
+        </a>
+        <div className="info-item">
+          {user.isCompany ? "Företag" : "Privat"}
         </div>
       </div>
+    ))
+  )
+)}
+
+        </div>
       {selectedUser || isUserLoading ? (
   <div className="modal-overlay" onClick={closeModal}>
     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -364,12 +387,13 @@ const handleConfirmDelete = () => {
             </div>
             <div className="info-row">
               <div className="info-box"><strong>Verifierad:</strong> {selectedUser.isVerified ? "Ja" : "Nej"}</div>
-              <div className="info-box"><strong>Villkor Accepterade:</strong> {selectedUser.termsAndConditions ? "Ja" : "Nej"}</div>
+              <div className="info-box"><strong>Antal Ordrar:</strong><a onClick={handleFindOrdersClick}> {selectedUser.orderCount || "0"}</a></div>
               <div className="info-box"><strong>Registreringsdatum:</strong> {selectedUser.registeredAt ? new Date(selectedUser.registeredAt).toLocaleDateString() : "N/A"}</div>
             </div>
             <div className="info-row">
-            <div className="info-box"><strong>Antal Ordrar:</strong> {selectedUser.orderCount || "0"}</div>
+            
             </div>
+            
             {/* Address Section */}
             <h4 className="address-title">Adresser</h4>
             {selectedUser.addresses && selectedUser.addresses.length > 0 ? (
@@ -388,14 +412,7 @@ const handleConfirmDelete = () => {
             ) : (
               <p>Ingen adress tillgänglig</p>
             )}
-             {/* Admin Note */}
-                    <div className="aa">
-                        {/* Button to trigger the deletion */}
-                    <button 
-                        onClick={() => handleDeleteClick('user-id')} 
-                        className='button-negative'>
-                        Ta bort användaren
-                    </button>
+
 
                     {/* Modal for confirmation */}
                     {showDeleteModal && (
@@ -407,7 +424,11 @@ const handleConfirmDelete = () => {
                             </div>
                         </div>
                     )}
-                <label>Adminanteckning:</label>
+               <div className='aa'> <label>Adminanteckning:</label>                        {/* Button to trigger the deletion */}
+                    <a 
+                        onClick={() => handleDeleteClick('user-id')}>
+                        Ta bort användaren
+                    </a></div>
                 <textarea
                 className="admin-note"
                 value={adminNote}
@@ -416,7 +437,7 @@ const handleConfirmDelete = () => {
                 <button className="button-positive" onClick={handleSaveNote}>
                 Spara anteckningen
                 </button>
-            </div>
+
           </>
         )}
       </div>

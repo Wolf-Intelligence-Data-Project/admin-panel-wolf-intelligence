@@ -1,0 +1,85 @@
+
+  /* Hiding elements like buttons or extra sections during print */
+  .no-print {
+    @media print {
+      display: none;
+    }
+  }
+  
+  /* Adjust print page styles */
+  @media print {
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: auto;
+      font-size: 12pt;
+    }
+  
+    /* Page Layout to center content on A4 paper */
+    .printable-content {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+
+    }
+  
+    /* Set page size to A4 */
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+  .modal-content{
+    min-width:100%;
+    box-shadow: 0 0 0 rgba(0,0,0,0);
+    min-height: 100%;
+    padding: 0;
+    margin: 0;
+    .button{
+        display: none;
+    }
+      .close{
+        display: none;
+      }
+      .page-break {
+        page-break-before: always;
+        page-break-inside: avoid;
+        break-before: page;
+      }
+  }
+    /* Prevent content from getting stretched */
+    .card, .modal-content {
+      max-width: none;
+      width: auto;
+      margin: 0 auto;
+      padding: 10px;
+      display: block;
+      page-break-inside: avoid;
+      padding: 30px;
+
+    }
+  
+    /* Adjust table and other content within the printable area */
+    .card, .modal-content {
+      page-break-before: always;
+    }
+  
+    /* Remove unnecessary elements like buttons, nav, etc., from the print */
+    header, footer, .no-print {
+      display: none !important;
+    }
+  
+    /* Adjust text size and margins for better readability */
+    h1, h2, h3 {
+      font-size: 18pt;
+      margin-bottom: 10px;
+    }
+  
+    p, li {
+      font-size: 12pt;
+      line-height: 1.5;
+    }
+  }
+  
